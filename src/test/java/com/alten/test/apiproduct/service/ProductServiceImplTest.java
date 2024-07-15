@@ -1,5 +1,6 @@
 package com.alten.test.apiproduct.service;
 
+import com.alten.test.apiproduct.configuration.exception.BadRequestException;
 import com.alten.test.apiproduct.model.Product;
 import com.alten.test.apiproduct.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,5 +50,37 @@ class ProductServiceImplTest {
         assertEquals("Tablet", result.get(1).getName());
 
     }
+
+
+    @Test
+    void CreateProductTest() {
+
+        Product product = new Product();
+        product.setId(1L);
+        product.setCode("P12345");
+        product.setName("Smartphone");
+
+        when(productRepository.save(product)).thenReturn(product);
+
+        Product result = productService.createProduct(product);
+
+        assertEquals(product, result);
+        verify(productRepository).save(product);
+    }
+
+    @Test
+    void createProductInvalidProductNameTest() {
+        Product product = new Product();
+        product.setId(1L);
+        product.setCode("P12345");
+        product.setName("");
+
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            productService.createProduct(product);
+        });
+
+        assertEquals("The name of Product is mandatory", exception.getMessage());
+    }
+
 
 }
