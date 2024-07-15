@@ -2,6 +2,7 @@ package com.alten.test.apiproduct.api;
 
 import com.alten.test.apiproduct.model.Product;
 import com.alten.test.apiproduct.service.ProductServiceInter;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,16 @@ public class ProductController {
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
         Product newProduct = productService.createProduct(product);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/product/{id}")
+    public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product) {
+        if (product.getId() == null) {
+            return null;
+        }
+        Product updatedProduct = productService.createProduct(product);
+        return ResponseEntity.ok().body(updatedProduct);
+
     }
 
     @GetMapping("/{id}")
