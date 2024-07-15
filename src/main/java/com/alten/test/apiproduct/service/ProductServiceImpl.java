@@ -1,6 +1,7 @@
 package com.alten.test.apiproduct.service;
 
 import com.alten.test.apiproduct.configuration.exception.BadRequestException;
+import com.alten.test.apiproduct.configuration.exception.NotFoundException;
 import com.alten.test.apiproduct.model.Product;
 import com.alten.test.apiproduct.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,9 @@ public class ProductServiceImpl implements ProductServiceInter {
 
     @Override
     public void deleteProduct(Long id) {
-
+        if (!productRepository.existsById(id)) {
+            throw new NotFoundException("Product with id " + id + " doesn't exists");
+        }
+        productRepository.deleteById(id);
     }
 }

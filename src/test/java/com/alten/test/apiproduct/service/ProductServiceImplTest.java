@@ -1,6 +1,7 @@
 package com.alten.test.apiproduct.service;
 
 import com.alten.test.apiproduct.configuration.exception.BadRequestException;
+import com.alten.test.apiproduct.configuration.exception.NotFoundException;
 import com.alten.test.apiproduct.model.Product;
 import com.alten.test.apiproduct.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
@@ -112,6 +112,33 @@ class ProductServiceImplTest {
             productService.getProductById(productId);
         });
         assertEquals("Product with id " + productId + " doesn't exist", badRequestException.getMessage());
+    }
+
+
+    @Test
+    void deleteProductTest() {
+        Long productId = 1L;
+
+        when(productRepository.existsById(productId)).thenReturn(true);
+        doNothing().when(productRepository).deleteById(productId);
+
+        productService.deleteProduct(productId);
+
+        verify(productRepository).existsById(productId);
+        verify(productRepository).deleteById(productId);
+    }
+
+    @Test
+    void deleteProductProductDoesNotExistTest() {
+        Long productId = 1L;
+
+        when(productRepository.existsById(productId)).thenReturn(false);
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            productService.deleteProduct(productId);
+        });
+
+        assertEquals("Product with id " + productId + " doesn't exist", exception.getMessage());
     }
 
 
