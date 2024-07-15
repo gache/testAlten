@@ -29,7 +29,7 @@ class ProductServiceImplTest {
 
 
     @Test
-    public void getAllProductsTest() {
+    void getAllProductsTest() {
         Product product = new Product();
         product.setId(1L);
         product.setCode("P12345");
@@ -85,7 +85,7 @@ class ProductServiceImplTest {
 
 
     @Test
-    public void getProductByIdTest() {
+    void getProductByIdTest() {
 
         Long productId = 1L;
         Product product = new Product();
@@ -103,7 +103,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    public void getProductByIdProductDoesNotExistTest() {
+    void getProductByIdProductDoesNotExistTest() {
         Long productId = 1L;
 
         when(productRepository.existsById(productId)).thenReturn(false);
@@ -111,7 +111,7 @@ class ProductServiceImplTest {
         BadRequestException badRequestException = assertThrows(BadRequestException.class, () -> {
             productService.getProductById(productId);
         });
-        assertEquals("Product with id " + productId + " doesn't exist", badRequestException.getMessage());
+        assertEquals("Product with id " + productId + " doesn't exists", badRequestException.getMessage());
     }
 
 
@@ -138,7 +138,7 @@ class ProductServiceImplTest {
             productService.deleteProduct(productId);
         });
 
-        assertEquals("Product with id " + productId + " doesn't exist", exception.getMessage());
+        assertEquals("Product with id " + productId + " doesn't exists", exception.getMessage());
     }
 
 
