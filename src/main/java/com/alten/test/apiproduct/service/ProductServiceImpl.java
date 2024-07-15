@@ -25,7 +25,10 @@ public class ProductServiceImpl implements ProductServiceInter {
 
     @Override
     public Optional<Product> getProductById(Long id) {
-        return Optional.empty();
+        if (!productRepository.existsById(id)) {
+            throw new BadRequestException("Product with id " + id + " doesn't exists");
+        }
+        return productRepository.findById(id);
     }
 
     @Override

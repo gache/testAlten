@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,6 +81,37 @@ class ProductServiceImplTest {
         });
 
         assertEquals("The name of Product is mandatory", exception.getMessage());
+    }
+
+
+    @Test
+    public void getProductByIdTest() {
+
+        Long productId = 1L;
+        Product product = new Product();
+        product.setId(productId);
+        product.setCode("P12345");
+        product.setName("Smartphone");
+
+        when(productRepository.existsById(productId)).thenReturn(true);
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        Optional<Product> result = productService.getProductById(productId);
+
+        assertEquals(product, result.get());
+
+    }
+
+    @Test
+    public void getProductByIdProductDoesNotExistTest() {
+        Long productId = 1L;
+
+        when(productRepository.existsById(productId)).thenReturn(false);
+
+        BadRequestException badRequestException = assertThrows(BadRequestException.class, () -> {
+            productService.getProductById(productId);
+        });
+        assertEquals("Product with id " + productId + " doesn't exist", badRequestException.getMessage());
     }
 
 
